@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            NZ Government Accessibility Leaderboard — CWAC Quarterly Scan
+        </title>
+        <meta
+            name="description"
+            content="Accessibility performance leaderboard for New Zealand government websites, based on CWAC automated audit data."
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <a href="#main-content" class="skip-link">Skip to main content</a>
+
+        <!-- ===== SITE HEADER ===== -->
+        <header class="site-header" role="banner">
+            <div class="header-inner">
+                <div class="header-brand">
+                    <img class="header-logo" src="public/assets/accessibility.svg" alt="" aria-hidden="true" width="36" height="36" />
+                    <div>
+                        <h1 class="header-title">
+                            NZ Government Accessibility Leaderboard
+                        </h1>
+                        <p class="header-subtitle">
+                            CWAC Quarterly Scan · <span id="meta-date">—</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="header-meta" aria-label="Scan statistics">
+                    <div class="meta-chip">
+                        <span>Organisations</span>
+                        <strong id="meta-orgs">—</strong>
+                    </div>
+                    <div class="meta-chip">
+                        <span>Sites</span>
+                        <strong id="meta-sites">—</strong>
+                    </div>
+                    <div class="meta-chip">
+                        <span>Pages scanned</span>
+                        <strong id="meta-pages">—</strong>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN ===== -->
+        <main class="main-wrap" id="main-content">
+            <!-- Controls row -->
+            <div
+                class="controls-bar"
+                role="region"
+                aria-label="Leaderboard filters"
+            >
+                <div class="search-box">
+                    <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        aria-hidden="true"
+                    >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input
+                        type="search"
+                        id="search-input"
+                        placeholder="Search organisations…"
+                        aria-label="Search organisations or sites"
+                        autocomplete="off"
+                    />
+                </div>
+
+                <!-- View toggle -->
+                <div class="view-toggle" role="group" aria-label="View by">
+                    <button class="view-toggle-btn active" data-view="orgs">Organisations</button>
+                    <button class="view-toggle-btn" data-view="sites">Sites</button>
+                </div>
+
+                <label for="sector-filter" class="sr-only"
+                    >Filter by sector</label
+                >
+                <select
+                    id="sector-filter"
+                    class="filter-select"
+                    aria-label="Filter by sector"
+                >
+                    <option value="all">All sectors</option>
+                </select>
+
+                <!-- Org filter (visible only in sites view) -->
+                <div id="org-filter-wrap" hidden>
+                    <label for="org-filter" class="sr-only">Filter by organisation</label>
+                    <select id="org-filter" class="filter-select" aria-label="Filter by organisation">
+                        <option value="all">All organisations</option>
+                    </select>
+                </div>
+
+                <!-- Comparison scan selector -->
+                <div id="comparison-wrap">
+                    <label for="comparison-select" class="sr-only">Compare to scan</label>
+                    <select id="comparison-select" class="filter-select" aria-label="Compare scores to scan date">
+                        <option value="">No comparison</option>
+                    </select>
+                </div>
+
+                <!-- Colourblind mode toggle -->
+                <button id="colorblind-toggle" class="colorblind-btn" aria-pressed="false">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+                    </svg>
+                    Colourblind mode
+                </button>
+
+                <div
+                    class="controls-right"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
+                    <span id="table-info"></span>
+                </div>
+            </div>
+
+            <!-- Score legend -->
+            <div class="legend-bar" aria-label="Score colour legend">
+                <span>Score key:</span>
+                <span class="legend-item"
+                    ><span
+                        class="legend-dot legend-dot-great"
+                        aria-hidden="true"
+                    ></span>
+                    ≥ 90 Great</span
+                >
+                <span class="legend-item"
+                    ><span
+                        class="legend-dot legend-dot-good"
+                        aria-hidden="true"
+                    ></span>
+                    ≥ 75 Good</span
+                >
+                <span class="legend-item"
+                    ><span
+                        class="legend-dot legend-dot-fair"
+                        aria-hidden="true"
+                    ></span>
+                    ≥ 50 Fair</span
+                >
+                <span class="legend-item"
+                    ><span
+                        class="legend-dot legend-dot-poor"
+                        aria-hidden="true"
+                    ></span>
+                    &lt; 50 Poor</span
+                >
+            </div>
+
+            <!-- Category tabs -->
+            <div
+                id="category-tabs"
+                class="category-tabs"
+                role="tablist"
+                aria-label="Audit category"
+            ></div>
+
+            <!-- Description bar -->
+            <p
+                id="tab-description"
+                style="
+                    font-size: 12px;
+                    color: var(--color-text-muted);
+                    margin-bottom: 12px;
+                "
+                aria-live="polite"
+            ></p>
+
+            <!-- Leaderboard table -->
+            <div
+                class="table-card"
+                id="leaderboard-panel"
+                role="tabpanel"
+                tabindex="-1"
+                aria-label="Leaderboard results"
+            >
+                <div class="table-responsive">
+                    <table>
+                        <caption id="table-caption" class="sr-only">Accessibility leaderboard</caption>
+                        <thead id="table-head"></thead>
+                        <tbody id="table-body">
+                            <tr>
+                                <td colspan="10">
+                                    <div class="state-loading">
+                                        <svg
+                                            width="32"
+                                            height="32"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                                            />
+                                        </svg>
+                                        <div>Loading leaderboard data…</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <span id="table-row-hint">Select a row and press Enter or click to view full details</span>
+                    <span
+                        >Scores weighted: Axe Core 40% · Focus 30% · Reflow 20%
+                        · Language 10%</span
+                    >
+                </div>
+            </div>
+        </main>
+
+        <!-- ===== DETAIL PANEL ===== -->
+        <div
+            id="detail-overlay"
+            class="detail-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="detail-org-name"
+        >
+            <div class="detail-panel" id="detail-panel">
+                <div class="detail-header" id="detail-header">
+                    <button
+                        id="detail-close"
+                        class="detail-close"
+                        aria-label="Close detail panel"
+                    >
+                        ✕
+                    </button>
+                    <div id="detail-org-name" class="detail-org-name"></div>
+                    <div id="detail-sector" class="detail-sector"></div>
+                </div>
+                <div class="detail-body" id="detail-content"></div>
+            </div>
+        </div>
+
+        <script src="app.js"></script>
+    </body>
+</html>

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+.env/
+
+# Data pipeline output — committed so the app works without running process_data.py.
+# Uncomment the line below to exclude it and require contributors to generate locally.
+# data/leaderboard.json
+
+# Raw axe-core audit CSVs — excluded because they exceed GitHub's 100 MB file limit.
+# Run process_data.py locally with the full CSVs to regenerate data/leaderboard.json.
+*_axe_core_audit.csv
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
