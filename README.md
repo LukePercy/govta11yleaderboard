@@ -2,6 +2,8 @@
 
 A lightweight single-page web app that visualises accessibility audit results from the NZ Government's quarterly **CWAC (Centralised Web Accessibility Checker)** scans.
 
+![NZ Government Accessibility Leaderboard screenshot](public/Leaderboardscreenshot.jpg)
+
 ## Live usage
 
 ```bat
