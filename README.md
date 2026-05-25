@@ -4,7 +4,9 @@ A lightweight single-page web app that visualises accessibility audit results fr
 
 ![NZ Government Accessibility Leaderboard screenshot](public/Leaderboardscreenshot.jpg)
 
-## Live usage
+## Local usage
+
+The app fetches `data/leaderboard.json` at runtime, so it must be served over HTTP — opening `index.html` directly as a `file://` URL will be blocked by the browser's CORS policy. Start a local server from the project root:
 
 ```bat
 python -m http.server 8765
