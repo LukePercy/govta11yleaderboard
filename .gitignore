@@ -12,9 +12,10 @@ env/
 # Uncomment the line below to exclude it and require contributors to generate locally.
 # data/leaderboard.json
 
-# Raw axe-core audit CSVs — excluded because they exceed GitHub's 100 MB file limit.
-# Run process_data.py locally with the full CSVs to regenerate data/leaderboard.json.
-*_axe_core_audit.csv
+# Raw quarterly scan folders — excluded to avoid secret-scanning false positives on CSV
+# content and GitHub's 100 MB file-size limit. Use the companion .zip archives instead.
+# Unzip locally and run process_data.py to regenerate data/leaderboard.json.
+*_quarterly_cwac_scan/
 
 # macOS
 .DS_Store
