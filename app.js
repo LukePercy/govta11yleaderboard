@@ -399,11 +399,18 @@ function renderTable() {
     const desc = document.getElementById("tab-description");
 
     desc.textContent = tabCfg.description;
-    if (activeTab === "focus_indicator" && allData?.meta.focus_data_available === false) {
-        desc.insertAdjacentHTML(
-            "beforeend",
-            ` — <strong style="color:var(--color-score-fair)">Focus indicator audit data was not included in this quarterly CWAC scan, so all scores show N/A.</strong>`
-        );
+    if (activeTab === "focus_indicator") {
+        if (allData?.meta.focus_data_available === false) {
+            desc.insertAdjacentHTML(
+                "beforeend",
+                ` — <strong style="color:var(--color-score-fair)">Focus indicator audit data was not included in this quarterly CWAC scan, so all scores show N/A.</strong>`
+            );
+        } else if (allData?.meta.focus_latest_scan && allData.meta.focus_latest_scan !== allData.meta.latest_scan) {
+            desc.insertAdjacentHTML(
+                "beforeend",
+                ` — <strong style="color:var(--color-score-fair)">Focus indicator audit was not run in the latest scan. Scores shown are from the ${formatDate(allData.meta.focus_latest_scan)} scan and are not included in the current Overall score.</strong>`
+            );
+        }
     }
     const caption = document.getElementById("table-caption");
     if (caption) caption.textContent = `${tabCfg.label} — ${activeView === "sites" ? "Sites" : "Organisations"} leaderboard`;
@@ -562,7 +569,7 @@ function buildRowHTML(item, displayRank, tabCfg) {
         pages: `<td>${item.pages_scanned.toLocaleString()}</td>`,
         overall: `<td>${scoreBadge(scores.overall, dv.overall)}</td>`,
         axe_core: `<td>${miniBar(scores.axe_core, dv.axe_core)}</td>`,
-        focus: `<td>${miniBar(scores.focus_indicator, dv.focus_indicator)}</td>`,
+        focus: `<td>${miniBar(scores.focus_indicator, dv.focus_indicator)}${item.focus_indicator_from_date ? `<div style="font-size:10px;color:var(--color-text-muted);margin-top:2px">from ${formatDate(item.focus_indicator_from_date)}</div>` : ""}</td>`,
         reflow: `<td>${miniBar(scores.reflow, dv.reflow)}</td>`,
         language: `<td>${miniBar(scores.language, dv.language)}</td>`,
 
@@ -807,7 +814,7 @@ function buildDetailHTML(item, isSite = false) {
 
     const scoreRows = [
         { label: "Axe Core (WCAG)", val: s.axe_core, delta: dv.axe_core, weight: "40%" },
-        { label: "Focus Indicator", val: s.focus_indicator, delta: dv.focus_indicator, weight: "30%" },
+        { label: "Focus Indicator", val: s.focus_indicator, delta: dv.focus_indicator, weight: "30%", fromDate: item.focus_indicator_from_date },
         { label: "Reflow", val: s.reflow, delta: dv.reflow, weight: "20%" },
         { label: "Language", val: s.language, delta: dv.language, weight: "10%" },
     ];
@@ -863,13 +870,14 @@ function buildDetailHTML(item, isSite = false) {
         const barW = isNull ? 0 : r.val;
         const color = isNull ? "var(--color-text-muted)" : scoreColor(r.val);
         const valStr = isNull ? "N/A" : r.val.toFixed(1);
+        const fromNote = r.fromDate ? `<span style="font-size:10px;color:var(--color-text-muted);margin-left:4px">(${formatDate(r.fromDate)})</span>` : "";
         return `
         <div class="score-row">
           <div class="score-row-label">${r.label} <span style="font-size:10px;color:var(--color-text-muted)">(${r.weight})</span></div>
           <div class="score-row-bar-wrap">
             <div class="score-row-bar" style="width:${barW}%;background:${color}"></div>
           </div>
-          <div class="score-row-val" style="color:${color}">${valStr}${deltaBadge(r.delta)}</div>
+          <div class="score-row-val" style="color:${color}">${valStr}${deltaBadge(r.delta)}${fromNote}</div>
         </div>`;
     }).join("")}
     </div>
@@ -892,7 +900,8 @@ function buildDetailHTML(item, isSite = false) {
     <div>
       <h2 class="detail-section-title">Focus Indicator</h2>
       ${s.focus_indicator !== null
-            ? `<div class="stat-grid">
+            ? `${item.focus_indicator_from_date ? `<p style="font-size:11px;color:var(--color-text-muted);margin-bottom:8px">Data from the ${formatDate(item.focus_indicator_from_date)} scan — not included in the current overall score.</p>` : ""}
+        <div class="stat-grid">
         <div class="stat-tile">
           <div class="stat-tile-val" style="color:${scoreColor(s.focus_indicator)}">${d.focus_indicator.pages_with_issues.toLocaleString()}</div>
           <div class="stat-tile-label">Pages with issues</div>

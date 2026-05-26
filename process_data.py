@@ -466,9 +466,34 @@ def main():
     for i, s in enumerate(all_sites):
         s["rank"] = i + 1
 
+    has_focus_curr = scan_meta[0]["focus_available"]
+
+    # ── Carry forward most-recent focus data if latest scan lacks it ──────
+    focus_backfill_date = None
+    if not has_focus_curr:
+        for past_date in past_dates:
+            if any(o["scores"]["focus_indicator"] is not None
+                   for o in all_scan_data[past_date][1].values()):
+                focus_backfill_date = past_date
+                break
+
+    if focus_backfill_date:
+        past_orgs_bf = all_scan_data[focus_backfill_date][1]
+        past_sites_bf = all_scan_data[focus_backfill_date][0]
+        for org in organisations:
+            past = past_orgs_bf.get(org["name"])
+            if past and past["scores"]["focus_indicator"] is not None:
+                org["scores"]["focus_indicator"] = past["scores"]["focus_indicator"]
+                org["details"]["focus_indicator"] = past["details"]["focus_indicator"]
+                org["focus_indicator_from_date"] = focus_backfill_date
+        for site in all_sites:
+            past = past_sites_bf.get(site["base_url"])
+            if past and past["scores"]["focus_indicator"] is not None:
+                site["scores"]["focus_indicator"] = past["scores"]["focus_indicator"]
+                site["details"]["focus_indicator"] = past["details"]["focus_indicator"]
+                site["focus_indicator_from_date"] = focus_backfill_date
     # ── Assemble final JSON ────────────────────────────────────────────
     sectors = sorted({o["sector"] for o in organisations})
-    has_focus_curr = scan_meta[0]["focus_available"]
 
     output = {
         "meta": {
@@ -478,7 +503,8 @@ def main():
             "total_sites":          len(all_sites),
             "total_pages":          sum(o["pages_scanned"] for o in organisations),
             "scans":                scan_meta,
-            "focus_data_available": has_focus_curr,
+            "focus_data_available": has_focus_curr or (focus_backfill_date is not None),
+            "focus_latest_scan": focus_backfill_date if (not has_focus_curr and focus_backfill_date) else latest_date,
             "scoring_weights": {
                 "axe_core":        0.40,
                 "focus_indicator": 0.30 if has_focus_curr else None,
@@ -488,7 +514,10 @@ def main():
             "scoring_notes": {
                 "axe_core":        "% pages with zero WCAG violations (via axe-core, template-deduplicated)",
                 "focus_indicator": "% pages with all interactive elements showing a visible focus ring"
-                                   + ("" if has_focus_curr else " (not available for current scan)"),
+                                   + ("" if has_focus_curr
+                                      else f" (scores from {focus_backfill_date} scan — not included in latest overall)"
+                                      if focus_backfill_date
+                                      else " (not available for any scan)"),
                 "reflow":          "% pages with no horizontal overflow at 320px viewport width",
                 "language":        "Flesch-Kincaid grade ≤8 scores 100; −5 pts per grade above 8",
             },
