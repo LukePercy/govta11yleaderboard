@@ -101,7 +101,21 @@ Score bands: **Great** ≥ 90 · **Good** ≥ 75 · **Fair** ≥ 50 · **Poor** 
 
 ## Licence
 
-Released under the [MIT License](LICENSE) — free to use, modify, and distribute.
+This repository is dual-licensed by content type:
+
+- **Code and project files** (`index.html`, `app.js`, `styles.css`, `process_data.py`, and other source/config files): [MIT License](LICENSE)
+- **Dataset files** (quarterly CWAC CSV exports, zipped source exports, and derived `data/leaderboard.json`): [CC BY 4.0](LICENSE-DATA.md)
+
+The CWAC dataset originates from data published by the New Zealand Government and is not covered by this repo's MIT software license.
+
+### Data attribution (CC BY 4.0)
+
+Source: New Zealand Government, Department of Internal Affairs, Centralised Web Accessibility Checker (CWAC) website scores.
+
+- Source page: <https://www.digital.govt.nz/standards-and-guidance/nz-government-web-standards/centralised-web-accessibility-checker-cwac/website-scores-cwac>
+- License: <https://creativecommons.org/licenses/by/4.0/>
+
+If you reuse or redistribute the data, keep attribution and indicate whether you made changes, as required by CC BY 4.0.
 
 ---
 

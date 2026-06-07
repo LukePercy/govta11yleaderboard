@@ -641,6 +641,29 @@ tbody tr:focus-visible {
     gap: 8px;
 }
 
+/* ===================== ATTRIBUTION FOOTER ===================== */
+.site-attribution {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px 20px;
+}
+
+.site-attribution p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+.site-attribution a {
+    color: var(--color-accent);
+    text-underline-offset: 2px;
+}
+
+.site-attribution a:hover {
+    text-decoration-thickness: 2px;
+}
+
 /* ===================== DETAIL PANEL ===================== */
 .detail-overlay {
     position: fixed;
@@ -1060,6 +1083,9 @@ tbody tr:focus-visible {
     }
     .main-wrap {
         padding: 12px;
+    }
+    .site-attribution {
+        padding: 0 12px 16px;
     }
     .category-tabs {
         gap: 2px;

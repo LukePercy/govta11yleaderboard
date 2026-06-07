@@ -499,6 +499,16 @@ def main():
         "meta": {
             "latest_scan":          latest_date,
             "generated_at":         datetime.now().isoformat(),
+            "data_license": {
+                "name": "CC BY 4.0",
+                "url": "https://creativecommons.org/licenses/by/4.0/",
+                "applies_to": "All dataset content in this file",
+            },
+            "data_attribution": {
+                "source": "New Zealand Government, Department of Internal Affairs, Centralised Web Accessibility Checker (CWAC) website scores",
+                "source_url": "https://www.digital.govt.nz/standards-and-guidance/nz-government-web-standards/centralised-web-accessibility-checker-cwac/website-scores-cwac",
+                "notes": "Derived and aggregated from quarterly CWAC CSV exports",
+            },
             "total_organisations":  len(organisations),
             "total_sites":          len(all_sites),
             "total_pages":          sum(o["pages_scanned"] for o in organisations),
